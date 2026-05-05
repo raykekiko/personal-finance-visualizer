@@ -1,7 +1,9 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 A Full-Stack webapplication that helps users track and analyse their expenses through interactive charts and dashboards.
-Tech Stack : Next.js , React. Backend : API Routes. Database : MongoDB .
+Tech Stack : Next.js , React.
+Backend : API Routes. 
+Database : MongoDB .
 
 ## Getting Started
 
