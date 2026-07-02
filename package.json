@@ -3,12 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-  "dev": "next dev",
-  "build": "next build",
-  "start": "next start",
-  "lint": "next lint"
-}
-,
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.6",
     "@radix-ui/react-popover": "^1.1.6",
@@ -21,7 +20,7 @@
     "dotenv": "^16.4.7",
     "mongodb": "^6.13.0",
     "mongoose": "^8.10.1",
-    "next": "^15.1.7",
+    "next": "^15.1.9",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "recharts": "^2.15.1",
