@@ -1,24 +1,9 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
-export default function TransactionList() {
-  const [transactions, setTransactions] = useState([]);
+export default function TransactionList({ transactions = [], refreshTransactions }) {
   const [editTransaction, setEditTransaction] = useState(null);
   const [editedData, setEditedData] = useState({ description: "", amount: "", category: "" });
-
-  useEffect(() => {
-    fetchTransactions();
-  }, []);
-
-  const fetchTransactions = async () => {
-    try {
-      const response = await fetch("/api/transactions");
-      const data = await response.json();
-      setTransactions(data);
-    } catch (error) {
-      console.error("Error fetching transactions:", error);
-    }
-  };
 
   const handleDelete = async (id) => {
     try {
@@ -29,7 +14,7 @@ export default function TransactionList() {
       });
 
       if (res.ok) {
-        setTransactions((prev) => prev.filter((t) => t._id !== id));
+        refreshTransactions();
       } else {
         alert("Failed to delete transaction.");
       }
@@ -66,21 +51,20 @@ export default function TransactionList() {
 
       await response.json();
       setEditTransaction(null);
-      fetchTransactions();
+      refreshTransactions();
     } catch (error) {
       console.error("Error updating transaction:", error);
       alert("Failed to update transaction.");
     }
   };
 
-  // 🔹 Get only the last 5 transactions
-  const recentTransactions = transactions.slice(-5).reverse();
+  const safeTransactions = Array.isArray(transactions) ? transactions : [];
+  const recentTransactions = safeTransactions.slice(-5).reverse();
 
   return (
     <div className="max-w-lg mx-auto mt-6">
       <h2 className="text-2xl font-bold text-gray-700 mb-4">Transaction History</h2>
 
-      {/* ✅ Recent Transactions Section */}
       <h3 className="text-lg font-semibold mt-6">Recent Transactions</h3>
       <ul className="list-disc list-inside bg-white p-4 rounded-lg shadow">
         {recentTransactions.length > 0 ? (
@@ -94,10 +78,9 @@ export default function TransactionList() {
         )}
       </ul>
 
-      {/* ✅ All Transactions Section */}
-      {transactions.length > 0 ? (
+      {safeTransactions.length > 0 ? (
         <div className="bg-white rounded-lg shadow-md p-4 mt-4">
-          {transactions.map((transaction) => (
+          {safeTransactions.map((transaction) => (
             <div key={transaction._id} className="flex justify-between items-center border-b py-2">
               <div>
                 <p className="font-semibold text-gray-800">{transaction.description}</p>
@@ -125,7 +108,6 @@ export default function TransactionList() {
         <p className="text-gray-500 text-center">No transactions yet.</p>
       )}
 
-      {/* Edit Modal */}
       {editTransaction && (
         <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg">

@@ -2,7 +2,8 @@
 import { useState, useEffect } from "react";
 import TransactionForm from "../components/TransactionForm";
 import TransactionList from "../components/TransactionList";
-import Dashboard from "../components/Dashboard"; // ✅ Import Dashboard
+import dynamic from "next/dynamic";
+const Dashboard = dynamic(() => import("../components/Dashboard"), { ssr: false });
 
 export default function Home() {
   const [transactions, setTransactions] = useState([]);
@@ -12,7 +13,12 @@ export default function Home() {
     try {
       const response = await fetch("/api/transactions");
       const data = await response.json();
-      setTransactions(data); // 🔄 Update state
+      if (Array.isArray(data)) {
+        setTransactions(data);
+      } else {
+        console.error("API did not return an array:", data);
+        setTransactions([]);
+      }
     } catch (error) {
       console.error("Error fetching transactions:", error);
     }
