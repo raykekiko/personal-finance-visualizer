@@ -13,6 +13,9 @@ export default function TransactionForm({ refreshTransactions }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
+    // Block negative amounts at input time
+    if (name === "amount" && value !== "" && Number(value) < 0) return;
+
     setFormData({
       ...formData,
       [name]: name === "amount" ? Number(value) : value, // Convert amount to number
@@ -25,6 +28,11 @@ export default function TransactionForm({ refreshTransactions }) {
     const { description, amount, category } = formData;
 
     if (!description || !amount || !category) return;
+
+    if (amount <= 0) {
+      alert("Amount must be greater than 0.");
+      return;
+    }
 
     const newTransaction = { description, amount, category, date: new Date() };
 
@@ -68,6 +76,7 @@ export default function TransactionForm({ refreshTransactions }) {
       <input
         type="number"
         name="amount"
+        min="0"
         placeholder="Amount"
         value={formData.amount}
         onChange={handleChange}

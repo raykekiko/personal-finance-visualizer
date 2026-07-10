@@ -20,14 +20,18 @@ export async function POST(req) {
   try {
     await connectDB();
     const data = await req.json();
-    
+
     console.log("Received data:", data); // Debugging
 
     const { description, amount, category } = data;
 
     // 🛑 Validate input data
-    if (!description || !amount || !category) {
+    if (!description || amount === undefined || amount === null || !category) {
       return NextResponse.json({ error: "Missing fields" }, { status: 400 });
+    }
+
+    if (typeof amount !== "number" || isNaN(amount) || amount <= 0) {
+      return NextResponse.json({ error: "Amount must be a positive number" }, { status: 400 });
     }
 
     // ✅ Ensure `date` is always included
@@ -73,8 +77,12 @@ export async function PUT(req) {
     await connectDB();
     const { id, description, amount, category } = await req.json();
 
-    if (!id || !description || !amount || !category) {
+    if (!id || !description || amount === undefined || amount === null || !category) {
       return NextResponse.json({ error: "Missing fields" }, { status: 400 });
+    }
+
+    if (typeof amount !== "number" || isNaN(amount) || amount <= 0) {
+      return NextResponse.json({ error: "Amount must be a positive number" }, { status: 400 });
     }
 
     await Transaction.updateOne(

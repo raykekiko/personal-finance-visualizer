@@ -28,9 +28,20 @@ export default function TransactionList({ transactions = [], refreshTransactions
     setEditedData(transaction);
   };
 
+  const handleAmountChange = (e) => {
+    const value = e.target.value;
+    if (value !== "" && Number(value) < 0) return; // block negatives
+    setEditedData({ ...editedData, amount: value });
+  };
+
   const handleSave = async () => {
     if (!editedData.description || !editedData.amount || !editedData.category) {
       alert("Please fill all fields.");
+      return;
+    }
+
+    if (Number(editedData.amount) <= 0) {
+      alert("Amount must be greater than 0.");
       return;
     }
 
@@ -121,8 +132,9 @@ export default function TransactionList({ transactions = [], refreshTransactions
             />
             <input
               type="number"
+              min="0"
               value={editedData.amount}
-              onChange={(e) => setEditedData({ ...editedData, amount: e.target.value })}
+              onChange={handleAmountChange}
               className="w-full p-2 border rounded mb-2"
               placeholder="Amount"
             />

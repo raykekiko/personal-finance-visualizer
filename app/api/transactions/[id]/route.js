@@ -8,8 +8,12 @@ export async function PUT(req, { params }) {
     const { id } = params; // No need to await params.id
     const { description, amount, category } = await req.json();
 
-    if (!id || !description || !amount || !category) {
+    if (!id || !description || amount === undefined || amount === null || !category) {
       return new Response(JSON.stringify({ error: "Missing fields" }), { status: 400 });
+    }
+
+    if (typeof amount !== "number" || isNaN(amount) || amount <= 0) {
+      return new Response(JSON.stringify({ error: "Amount must be a positive number" }), { status: 400 });
     }
 
     const updatedTransaction = await Transaction.findByIdAndUpdate(
@@ -18,12 +22,9 @@ export async function PUT(req, { params }) {
       { new: true }
     );
 
-    if (!updatedTransaction) {
-      return new Response(JSON.stringify({ error: "Transaction not found" }), { status: 404 });
-    }
-
     return new Response(JSON.stringify(updatedTransaction), { status: 200 });
   } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), { status: 500 });
+    console.error("PUT request error:", error);
+    return new Response(JSON.stringify({ error: "Error updating transaction" }), { status: 500 });
   }
 }
